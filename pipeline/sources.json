@@ -1,0 +1,22 @@
+{
+  "sources": {
+    "cliopatria": {
+      "description": "Cliopatria polity borders, 3400 BCE to 2024 CE (Seshat Global History Databank)",
+      "version": "0.2.1",
+      "license": "CC BY 4.0",
+      "url": "https://github.com/Seshat-Global-History-Databank/cliopatria/raw/main/cliopatria.geojson.zip",
+      "file": "cliopatria.geojson.zip",
+      "unzip": true,
+      "sha256": "e10a4e429fca708788ff9e7572a95fce801fae55852d217cffabc1c59cd4eed4"
+    },
+    "naturalEarthLand": {
+      "description": "Natural Earth 1:50m land polygons",
+      "version": "master",
+      "license": "Public domain",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson",
+      "file": "ne_50m_land.geojson",
+      "unzip": false,
+      "sha256": "e874b27a51d146452be360cafb3cc50c86001074a67d534113e6534682f9826b"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "orbisjourney",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Interactive world history globe, 2000 BCE to 2000 CE",
+  "scripts": {
+    "data:fetch": "node pipeline/fetch-sources.mjs",
+    "data:spike": "node --max-old-space-size=8192 pipeline/build-spike-data.mjs",
+    "spike:dev": "vite spike",
+    "spike:build": "vite build spike",
+    "spike:bench": "node spike/bench/run-bench.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "maplibre-gl": "6.16.0",
+    "topojson-client": "3.1.0"
+  },
+  "devDependencies": {
+    "@types/geojson": "7946.0.16",
+    "@types/topojson-client": "3.1.5",
+    "fflate": "0.8.3",
+    "mapshaper": "0.7.101",
+    "playwright-core": "1.64.1",
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
+  }
+}

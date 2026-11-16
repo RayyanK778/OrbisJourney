@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrbisJourney Phase 0</title>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div class="panel">
+      <div class="row">
+        <output id="year" aria-live="polite"></output>
+        <input id="slider" type="range" step="1" aria-label="Year" />
+      </div>
+      <div class="row">
+        <button data-step="-100">−100</button>
+        <button data-step="-10">−10</button>
+        <button data-step="-1">−1</button>
+        <input id="year-input" type="number" min="1" max="2000" aria-label="Year number" />
+        <select id="era" aria-label="Era">
+          <option>BCE</option>
+          <option>CE</option>
+        </select>
+        <button data-step="1">+1</button>
+        <button data-step="10">+10</button>
+        <button data-step="100">+100</button>
+      </div>
+      <div class="row">
+        <div id="stats"></div>
+        <span class="spike-note">Test build</span>
+        <select id="method" aria-label="Update method">
+          <option value="setData">setData</option>
+          <option value="filter">filter</option>
+          <option value="window">window</option>
+        </select>
+        <select id="variant" aria-label="Data variant">
+          <option value="topojson-100y">topojson-100y</option>
+          <option value="topojson-50y">topojson-50y</option>
+          <option value="geojson-100y">geojson-100y</option>
+        </select>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
