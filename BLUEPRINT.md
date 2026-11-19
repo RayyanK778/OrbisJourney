@@ -312,7 +312,7 @@ Phase 0 tested these on a fast desktop, where all of them passed, apart from rar
 Each phase ends with a concrete test of whether it's done.
 
 ### Phase 0: Prove the approach
-Create the private GitHub repository, then render real Cliopatria data on a MapLibre globe, including the heaviest period (the 1900s), and scrub through the years.
+Create the GitHub repository (private at first, public since 2026-11-18), then render real Cliopatria data on a MapLibre globe, including the heaviest period (the 1900s), and scrub through the years.
 **Done when:** Section 6 targets are met or a fallback is chosen, and the chunk size and update method are decided.
 **Status: complete (2026-11-15).** MapLibre is confirmed, with TopoJSON in 100-year files updated by setData. Testing on a real phone and a typical laptop carries over into Phase 2.
 
@@ -343,7 +343,7 @@ Features from section 11, chosen one at a time.
 | 2 | Could this project ever be commercial, and is publishing data under GPL-3.0 acceptable? | **A passion project for now. Commercial use isn't ruled out, and GPL-3.0 is acceptable if it's ever needed.** | With no cultures layer, nothing GPL needs to ship. Non-commercial sources such as CShapes stay check-only, and licensing gets reviewed before any commercial launch. |
 | 3 | Who is the main audience? | **Curious general public and students,** desktop first, with solid mobile support. | Shapes the tone, explanations and interface. |
 | 4 | Where does the project live? | **Local and off OneDrive,** at `C:\Users\Rayyan\Desktop\OrbisJourney`. | This isn't the Desktop shown on screen, because Windows points that one at OneDrive. Files here have no OneDrive backup, so GitHub becomes the backup from Phase 0. |
-| 5 | When should this go on GitHub, and public or private? | **A private repository, created when Phase 0 starts.** | Provides history and backup from the first line of code. |
+| 5 | When should this go on GitHub, and public or private? | **Created as a private repository when Phase 0 started, then made public on 2026-11-18.** | Provides history and backup from the first line of code. Everything committed is visible to anyone, so licensing and attribution have to be right in the repository itself, not only on the finished site. |
 
 ## 11. Future feature ideas
 
