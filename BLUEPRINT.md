@@ -1,7 +1,7 @@
 # OrbisJourney: Project Blueprint
 
-**Status:** Draft 3. Phase 0 is complete, with results in [docs/phase-0-results.md](docs/phase-0-results.md).
-**Last updated:** 2026-11-15
+**Status:** Draft 4. Phases 0 and 1 are complete. Phase 0 results are in [docs/phase-0-results.md](docs/phase-0-results.md), and every data build writes [docs/data-report.md](docs/data-report.md).
+**Last updated:** 2026-11-20
 
 ## 1. Goal
 
@@ -85,6 +85,8 @@ Early dates can also differ from the usual scholarly ones. The data starts the Z
 
 **Finding 4: labels contain errors even where sources are plentiful.** The 1914 data includes "Denmark-Norway" (dissolved in 1814), "Empire of Haiti" (a republic by then), "First Hellenic Republic" (Greece was a kingdom in 1914), "Kingdom of Great Britain" (the United Kingdom since 1801), and "United Principalities of Moldavia and Wallachia" (Romania by then). The shapes may be fine even where the labels aren't. A corrections system is therefore a core requirement.
 
+Phase 1 found the errors run longer than 1914: "Kingdom of Great Britain" continues to 2024, and "Denmark-Norway" and "First Hellenic Republic" to 1940. All five are now fixed by corrections, along with the "Later Zhou" records from Finding 5.
+
 **Finding 5: a name doesn't identify one polity.** Three separate problems need a curated identity layer:
 
 - One continuous state can have several names. Sweden appears as "Kingdom of Sweden", "Swedish Empire" and "United Kingdoms of Sweden and Norway".
@@ -105,7 +107,16 @@ Early dates can also differ from the usual scholarly ones. The data starts the Z
 
 No tile server is needed. The whole site can run as static files. Phase 0 then found that storing each shared border once (TopoJSON) cuts the total to 2.62 MB and the largest century file to 0.37 MB.
 
-**Finding 8: the timeline must skip year 0.** No record starts in year 0, though 6 records end there and 7 start at year 1. The timeline goes from 1 BCE (stored as `-1`) straight to 1 CE (stored as `1`), which still selects the right records on both sides. The pipeline's checks should confirm nothing drops out at that transition.
+**Finding 8: the timeline must skip year 0.** No record starts in year 0, though 6 records end there and 7 start at year 1. The timeline goes from 1 BCE (stored as `-1`) straight to 1 CE (stored as `1`). The Cliopatria paper doesn't say how it numbers years around 0, so the pipeline reads a source year 0 as 1 BCE. That keeps all six records adjacent to their successors, and Phase 1 confirmed nothing drops out at the transition.
+
+**Finding 9: the overlap check finds shapes that are wrong, not just labels.** Phase 1 compares every pair of filled territories that exist at the same time. Most of the 350 overlaps it reports are real history, such as occupations and vassal states. Some are clear source errors:
+- The "French Fifth Republic" covers Algeria until 2023.
+- A territory labeled "Communist Party of China" stretches across Xinjiang in 1938–1945, an area the Soviet Union's shape also covers in 1940–1942.
+- The "Kingdom of Great Britain" shape includes Oman from 1973.
+
+The full list is in the data report, for review in Phase 3.
+
+**Finding 10: borders don't follow coastlines.** The paper explains that the shapes were traced from map images at about 40 km² per pixel and smoothed to 0.07°. They will spill into the sea and leave gaps along coasts on our land layer. Phase 2 should decide whether to clip territories to the land layer when building.
 
 ### 3.3 Data model
 
@@ -124,41 +135,59 @@ interface Entity {
 
 // Where and when: one shape valid for a span of years
 interface TerritoryRecord {
+  id: string;              // source name and first year, e.g. "kingdom-of-sweden:1905"
   entityId: string;
   from: number;            // inclusive; BCE is negative; year 0 doesn't exist
   to: number;              // inclusive
   label: string;           // the name for this period, e.g. "Swedish Empire"
-  groupId?: string;        // parent grouping, e.g. "british-empire"
+  sourceName: string;      // the name in the source, before corrections
+  groupIds: string[];      // groupings it belongs to, e.g. ["group-british-empire"]
   confidence: 1 | 2 | 3;   // 1 approximate, 2 moderate, 3 legally defined
   source: string;          // e.g. "cliopatria@0.2.1"
   correctionIds: string[]; // any corrections applied to this record
-  geometry: MultiPolygon;
+  geometry: Polygon | MultiPolygon;
 }
 ```
 
-Initial confidence comes from the era, since Cliopatria has no per-record score. historical-basemaps labels all the sampled features from 2000 BCE to 1000 CE as approximate and those from 1914 and 2000 as legally defined, which supports this approach. The exact year boundaries between levels will be set in Phase 3.
+A record can belong to several groupings at once. The Kingdom of Bohemia in 1305, for example, is in both the Holy Roman Empire and a personal union with Poland.
+
+The files the app loads carry these fields with one-letter keys to save space. [shared/schema.ts](shared/schema.ts) defines that format, and both the pipeline and the app import it.
+
+Initial confidence comes from the era, since Cliopatria has no per-record score. historical-basemaps labels all the sampled features from 2000 BCE to 1000 CE as approximate and those from 1914 and 2000 as legally defined, which supports this approach. Phase 1 uses provisional boundaries: approximate before 1000 CE, moderate from 1000 to 1815, and legally defined from 1816. Phase 3 will set the real ones.
 
 ### 3.4 Data pipeline
 
-The pipeline is a repeatable set of Node.js scripts. Node is already installed, and Python isn't. [mapshaper](https://github.com/mbloch/mapshaper) handles geometry.
+The pipeline is a set of TypeScript files that Node runs directly, with one file per step in [pipeline/steps/](pipeline/steps/). `npm run data:build` runs every step. [mapshaper](https://github.com/mbloch/mapshaper) handles geometry.
 
 ```text
 1. Fetch      Download a pinned source version and verify its checksum
-2. Normalize  Convert to the shared data model
-3. Identify   Map source names to Entity IDs (generated, then curated)
-4. Correct    Apply corrections from data/corrections/
-5. Validate   Check geometry, dates and overlaps; flag sudden area jumps
-6. Encode     Round coordinates and store shared borders once (TopoJSON).
-              No simplification: the source is already coarse (Phase 0).
-7. Chunk      Write per-century files and an index
-8. Report     Publish coverage against the checklist, and a change log
+2. Normalize  Convert to the shared data model; read source year 0 as 1 BCE
+3. Identify   Map source names to entity IDs: curated entities first, then
+              one generated entity for each remaining name
+4. Correct    Apply corrections from data/corrections/, splitting records
+              where a correction covers only some of their years
+5. Validate   Errors stop the build: bad geometry or dates, duplicate IDs,
+              and corrections or entity rules that match nothing.
+              Warnings go to the report: overlapping territories, sudden
+              area jumps, one entity filled twice at once
+6. Encode     Round coordinates, place label points, and store shared
+              borders once (TopoJSON). No simplification: the source is
+              already coarse (Phase 0)
+7. Chunk      Write per-century files, an index of years with border
+              changes, and the entity and correction lists
+8. Report     Write docs/data-report.md, which is committed so its diffs
+              show how each build changed the data
 ```
 
-- **Corrections never edit source data.** They are small reviewable files applied at build time, such as `{ match, change, reason, citation }`. This also meets the CC BY requirement to indicate changes.
-- **Upstream updates are safe to adopt.** A new source version is a re-run of the pipeline, and any correction that no longer matches is reported.
+- **Corrections never edit source data.** They are small reviewable files applied at build time, in the form `{ id, match, change, reason, citations }`. This also meets the CC BY requirement to indicate changes. [data/README.md](data/README.md) explains how to add one.
+- **Upstream updates are safe to adopt.** A new source version is a re-run of the pipeline. Any correction or entity rule that no longer matches fails the build with an explanation.
+- **Builds are reproducible.** Starting from nothing, `npm run data:build` produces byte-identical output, and an unchanged build rewrites an identical report. The first run takes about 3 minutes, mostly the overlap check. That check's results are cached by shape fingerprint, so later builds take about 15 seconds.
 - **Raw data stays out of git.** The 173 MB source file is over GitHub's 100 MB per-file limit, so the fetch script downloads it instead.
 
-Current pin: Cliopatria zip, SHA-256 `e10a4e429fca708788ff9e7572a95fce801fae55852d217cffabc1c59cd4eed4`, downloaded 2026-11-06.
+Current pins, by commit or tag so they can't change underneath us:
+
+- **Cliopatria v0.2.1:** commit `5f43337`, SHA-256 `e10a4e42…`
+- **Natural Earth land 1:50m v5.1.2:** SHA-256 `e874b27a…`
 
 ### 3.5 Measuring coverage: the checklist
 
@@ -176,8 +205,13 @@ Current pin: Cliopatria zip, SHA-256 `e10a4e429fca708788ff9e7572a95fce801fae5585
 
 - **Present-day geography:** Coastlines, rivers and lakes are modern, though some have changed considerably, including the head of the Persian Gulf.
 - **One version of events:** Cliopatria's authors say that its maps "reflect only one version" of past territories.
+- **How the borders were made:** One author hand-drew the borders onto 508 map images in 2014, working from cited regional atlases and histories. The shapes were then traced from those images by software, at about 40 km² per pixel, and smoothed to 0.07°. The result doesn't follow coastlines (Finding 10).
+- **Uncertainty isn't recorded:** The source has no measure of how certain a border is. Its authors note that uncertainty grows further back in time, and that the apparent stability of ancient borders, such as Egypt's across centuries, may reflect missing records rather than a stable state.
+- **What's left out by design:** A polity is included only if written sources attest to it, so pre-literate states are missing, such as the Xia dynasty before 1600 BCE. Apart from rare exceptions, a polity must also cover at least 5,000 km² and last at least 50 years.
+- **Year 0 is ambiguous:** The source doesn't say how it numbers years around 0. The pipeline's reading (Finding 8) could be off by one year at that boundary, which is far below the data's real precision.
 - **Contested subjects:** Modern disputes such as Taiwan, Kashmir, Crimea, Palestine and Western Sahara need a consistent policy: follow the cited source and add a neutral note where territory is disputed. Sensitive names and colonial terms get the same treatment.
-- **An unfinished check:** I couldn't open the limitations section of the Cliopatria paper because the sites blocked automated access. Reading it is a Phase 1 task, and it may change parts of this section.
+
+Sources: the [Cliopatria paper](https://doi.org/10.1038/s41597-025-04516-9), read in full during Phase 1, and the [repository README](https://github.com/Seshat-Global-History-Databank/cliopatria).
 
 ## 4. Technical architecture
 
@@ -233,13 +267,17 @@ OrbisJourney/
 │     ├─ timeline/      # Slider, stepper, playback
 │     ├─ panels/        # Territory details, legend, credits
 │     └─ data/          # Chunk loading and caching
-├─ pipeline/            # Data build scripts (section 3.4)
+├─ pipeline/            # Data build (section 3.4)
+│  └─ steps/            # One file per step, with tests alongside
+├─ shared/              # Used by pipeline and app: year handling, data file format
 ├─ data/
 │  ├─ raw/              # Downloaded sources (not in git)
+│  ├─ build/            # Site data written by the pipeline (not in git)
+│  ├─ cache/            # Saved overlap-check results (not in git)
 │  ├─ corrections/      # Reviewable fixes
 │  ├─ entities/         # Curated identity mappings
-│  └─ canon/            # Coverage checklist
-└─ docs/                # Methodology and sources
+│  └─ canon/            # Coverage checklist (Phase 3)
+└─ docs/                # Methodology, phase results, generated data report
 ```
 
 ## 5. Feature specifications
@@ -290,7 +328,8 @@ Phase 0 tested these on a fast desktop, where all of them passed, apart from rar
 
 ## 7. Quality checks
 
-- **Automated, on every data build:** Valid geometry, valid date ranges, no duplicate records for the same name and year, unexpected overlaps between filled territories, sudden area jumps, and every record mapped to an entity.
+- **Automated, on every data build:** Valid geometry, valid date ranges, no duplicate records for the same name and year, unexpected overlaps between filled territories, sudden area jumps, and every record mapped to an entity. All of these run from Phase 1. The geometry check covers structure and coordinate ranges, but not self-intersecting shapes yet.
+- **Unit tests (`npm test`):** Year arithmetic across the BCE/CE boundary, splitting records for corrections, entity rules, and chunk and change-year calculations.
 - **Benchmark-year review:** Compare 12 years with reference atlases and log the differences: 1500 BCE, 500 BCE, 323 BCE, 117 CE, 750, 1279, 1492, 1648, 1815, 1914, 1945 and 2000.
 - **Cross-checks:** CShapes for 1886 onward, and historical-basemaps at matching years to surface disagreements for review.
 - **Interface tests:** Year logic, especially the BCE/CE transition, and end-to-end tests of the timeline and territory selection.
@@ -319,6 +358,11 @@ Create the GitHub repository (private at first, public since 2026-11-18), then r
 ### Phase 1: Data foundation
 Build the pipeline, read the Cliopatria paper's limitations, generate initial entity mappings, and set up the corrections system and validation report.
 **Done when:** One command reproduces all site data from the pinned sources, and known label errors from Finding 4 are fixed through corrections.
+**Status: complete (2026-11-20).** `npm run data:build` rebuilt byte-identical output from an empty folder, and 12 corrections fix the Finding 4 labels and the Eastern Zhou. 8 curated entities cover those polities and Sweden, and the other 1,606 source names have generated entities.
+
+Carried forward:
+- **To Phase 2:** decide whether to clip territories to the coastline (Finding 10), and skip redraws in years with no border change, using the change-year list the pipeline now writes.
+- **To Phase 3:** review the 823 validation warnings and the 165 shared Wikidata IDs in the data report.
 
 ### Phase 2: Working first version
 Build the globe, timeline, border rendering, territory panel and credits page, and enable shareable URLs.
@@ -359,7 +403,7 @@ The data model already keeps sources and identities separate, so these can be ad
 ## 12. References
 
 - [Cliopatria repository](https://github.com/Seshat-Global-History-Databank/cliopatria) and [Zenodo archive](https://zenodo.org/records/13363121)
-- [Cliopatria paper, *Scientific Data* (2025)](https://doi.org/10.1038/s41597-025-04516-9) (limitations section not yet read)
+- [Cliopatria paper, *Scientific Data* (2025)](https://doi.org/10.1038/s41597-025-04516-9), open access, read in full in Phase 1
 - [historical-basemaps](https://github.com/aourednik/historical-basemaps)
 - [CShapes 2.0 at ETH Zurich](https://www.research-collection.ethz.ch/handle/20.500.11850/487987?show=full) and [BTAA catalog record](https://geo.btaa.org/catalog/b23a624e-f1ab-4989-8c94-f99f6e6fa414)
 - [MapLibre globe example](https://maplibre.org/maplibre-gl-js/docs/examples/display-a-globe-with-a-vector-map/)

@@ -1,0 +1,14 @@
+{
+  "corrections": [
+    {
+      "id": "denmark-norway-ended-1814",
+      "match": { "name": "Denmark-Norway", "from": 1815 },
+      "change": { "label": "Kingdom of Denmark" },
+      "reason": "Denmark-Norway ended in 1814, when Denmark ceded Norway to Sweden in the Treaty of Kiel. The source starts the union of Sweden and Norway in 1815, so the Danish shape is relabeled from the same year.",
+      "citations": [
+        { "title": "Treaty of Kiel", "url": "https://en.wikipedia.org/wiki/Treaty_of_Kiel" },
+        { "title": "Denmark–Norway", "url": "https://en.wikipedia.org/wiki/Denmark%E2%80%93Norway" }
+      ]
+    }
+  ]
+}

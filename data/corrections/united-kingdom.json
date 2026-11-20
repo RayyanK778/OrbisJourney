@@ -1,0 +1,23 @@
+{
+  "corrections": [
+    {
+      "id": "uk-great-britain-and-ireland-1801",
+      "match": { "name": "Kingdom of Great Britain", "from": 1801, "to": 1926 },
+      "change": { "label": "United Kingdom of Great Britain and Ireland" },
+      "reason": "The Acts of Union 1800 joined Great Britain and Ireland from 1 January 1801. The state kept this name until 1927, although the Irish Free State left in 1922. The source's shape for these years includes Ireland.",
+      "citations": [
+        { "title": "Acts of Union 1800", "url": "https://en.wikipedia.org/wiki/Acts_of_Union_1800" },
+        { "title": "Royal and Parliamentary Titles Act 1927", "url": "https://en.wikipedia.org/wiki/Royal_and_Parliamentary_Titles_Act_1927" }
+      ]
+    },
+    {
+      "id": "uk-northern-ireland-1927",
+      "match": { "name": "Kingdom of Great Britain", "from": 1927 },
+      "change": { "label": "United Kingdom of Great Britain and Northern Ireland" },
+      "reason": "The Royal and Parliamentary Titles Act 1927 changed the name to reflect the departure of the Irish Free State.",
+      "citations": [
+        { "title": "Royal and Parliamentary Titles Act 1927", "url": "https://en.wikipedia.org/wiki/Royal_and_Parliamentary_Titles_Act_1927" }
+      ]
+    }
+  ]
+}

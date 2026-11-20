@@ -1,0 +1,34 @@
+{
+  "corrections": [
+    {
+      "id": "haiti-divided-1807",
+      "match": { "name": "Empire of Haiti", "from": 1807, "to": 1819 },
+      "change": { "label": "Haiti" },
+      "reason": "The first Empire of Haiti ended with the death of Jacques I in 1806. Until 1820 the country was divided between the State of Haiti in the north (a kingdom from 1811) and the Republic of Haiti in the south. The source draws one shape for both, so it gets a neutral name.",
+      "citations": [
+        { "title": "First Empire of Haiti", "url": "https://en.wikipedia.org/wiki/First_Empire_of_Haiti" },
+        { "title": "State of Haiti", "url": "https://en.wikipedia.org/wiki/State_of_Haiti" },
+        { "title": "Republic of Haiti (1806–1820)", "url": "https://en.wikipedia.org/wiki/Republic_of_Haiti_(1806%E2%80%931820)" }
+      ]
+    },
+    {
+      "id": "haiti-republic-1820",
+      "match": { "name": "Empire of Haiti", "from": 1820, "to": 1848 },
+      "change": { "label": "Republic of Haiti" },
+      "reason": "Haiti was reunited as a republic in 1820 and stayed one until Faustin Soulouque declared the Second Empire in 1849. The source's label is correct for 1849–1858.",
+      "citations": [
+        { "title": "History of Haiti", "url": "https://en.wikipedia.org/wiki/History_of_Haiti" },
+        { "title": "Second Empire of Haiti", "url": "https://en.wikipedia.org/wiki/Second_Empire_of_Haiti" }
+      ]
+    },
+    {
+      "id": "haiti-republic-1859",
+      "match": { "name": "Empire of Haiti", "from": 1859 },
+      "change": { "label": "Republic of Haiti" },
+      "reason": "Faustin I was overthrown in 1859 and the republic was restored.",
+      "citations": [
+        { "title": "Second Empire of Haiti", "url": "https://en.wikipedia.org/wiki/Second_Empire_of_Haiti" }
+      ]
+    }
+  ]
+}

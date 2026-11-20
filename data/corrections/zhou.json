@@ -1,0 +1,14 @@
+{
+  "corrections": [
+    {
+      "id": "eastern-zhou",
+      "match": { "name": "Later Zhou", "to": -1 },
+      "change": { "label": "Eastern Zhou" },
+      "reason": "\"Later Zhou\" was a short-lived state of 951–960 CE. The source uses the name for records from 750 to 257 BCE as well, which cover the Zhou dynasty after its court moved east in 771 BCE: the Eastern Zhou.",
+      "citations": [
+        { "title": "Eastern Zhou", "url": "https://en.wikipedia.org/wiki/Eastern_Zhou" },
+        { "title": "Later Zhou", "url": "https://en.wikipedia.org/wiki/Later_Zhou" }
+      ]
+    }
+  ]
+}

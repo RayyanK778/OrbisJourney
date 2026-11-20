@@ -1,0 +1,22 @@
+{
+  "corrections": [
+    {
+      "id": "romania-principality-1862",
+      "match": { "name": "United Principalities of Moldavia and Wallachia", "from": 1862, "to": 1880 },
+      "change": { "label": "Principality of Romania" },
+      "reason": "Moldavia and Wallachia merged their governments into one state in 1862, officially named Romania from 1866. \"Principality of Romania\" is the usual name for 1862–1881.",
+      "citations": [
+        { "title": "United Principalities", "url": "https://en.wikipedia.org/wiki/United_Principalities" }
+      ]
+    },
+    {
+      "id": "romania-kingdom-1881",
+      "match": { "name": "United Principalities of Moldavia and Wallachia", "from": 1881 },
+      "change": { "label": "Kingdom of Romania" },
+      "reason": "Romania was proclaimed a kingdom in 1881.",
+      "citations": [
+        { "title": "Kingdom of Romania", "url": "https://en.wikipedia.org/wiki/Kingdom_of_Romania" }
+      ]
+    }
+  ]
+}

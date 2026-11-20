@@ -1,0 +1,33 @@
+{
+  "corrections": [
+    {
+      "id": "greece-kingdom-1832",
+      "match": { "name": "First Hellenic Republic", "from": 1832, "to": 1923 },
+      "change": { "label": "Kingdom of Greece" },
+      "reason": "The London Conference of 1832 made Greece a kingdom under Otto. It stayed a kingdom until the republic was proclaimed in 1924.",
+      "citations": [
+        { "title": "London Conference of 1832", "url": "https://en.wikipedia.org/wiki/London_Conference_of_1832" },
+        { "title": "Kingdom of Greece", "url": "https://en.wikipedia.org/wiki/Kingdom_of_Greece" }
+      ]
+    },
+    {
+      "id": "greece-second-republic-1924",
+      "match": { "name": "First Hellenic Republic", "from": 1924, "to": 1934 },
+      "change": { "label": "Second Hellenic Republic" },
+      "reason": "Greece was a republic from 1924 until the monarchy was restored in 1935.",
+      "citations": [
+        { "title": "Second Hellenic Republic", "url": "https://en.wikipedia.org/wiki/Second_Hellenic_Republic" }
+      ]
+    },
+    {
+      "id": "greece-kingdom-restored-1935",
+      "match": { "name": "First Hellenic Republic", "from": 1935 },
+      "change": { "label": "Kingdom of Greece" },
+      "reason": "The monarchy was restored after the referendum of November 1935.",
+      "citations": [
+        { "title": "1935 Greek monarchy referendum", "url": "https://en.wikipedia.org/wiki/1935_Greek_monarchy_referendum" },
+        { "title": "Kingdom of Greece", "url": "https://en.wikipedia.org/wiki/Kingdom_of_Greece" }
+      ]
+    }
+  ]
+}

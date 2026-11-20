@@ -1,0 +1,71 @@
+{
+  "entities": [
+    {
+      "id": "denmark",
+      "displayName": "Denmark",
+      "kind": "state",
+      "wikidataId": "Q35",
+      "wikipediaTitle": "Denmark",
+      "names": ["Kingdom of Denmark", "Denmark-Norway", "Denmark"]
+    },
+    {
+      "id": "greece",
+      "displayName": "Greece",
+      "kind": "state",
+      "wikidataId": "Q41",
+      "wikipediaTitle": "Greece",
+      "names": ["First Hellenic Republic", "Kingdom of Greece", "Third Hellenic Republic"]
+    },
+    {
+      "id": "haiti",
+      "displayName": "Haiti",
+      "kind": "state",
+      "wikidataId": "Q790",
+      "wikipediaTitle": "Haiti",
+      "names": ["Haiti", "Empire of Haiti", "Republic of Haiti"]
+    },
+    {
+      "id": "romania",
+      "displayName": "Romania",
+      "kind": "state",
+      "wikidataId": "Q218",
+      "wikipediaTitle": "Romania",
+      "names": ["United Principalities of Moldavia and Wallachia", "Kingdom of Romania", "Socialist Republic of Romania", "Romania"],
+      "note": "Moldavia and Wallachia before 1859 stay separate entities."
+    },
+    {
+      "id": "sweden",
+      "displayName": "Sweden",
+      "kind": "state",
+      "wikidataId": "Q34",
+      "wikipediaTitle": "Sweden",
+      "names": ["Kingdom of Sweden", "Swedish Empire", "United Kingdoms of Sweden and Norway"]
+    },
+    {
+      "id": "united-kingdom",
+      "displayName": "United Kingdom",
+      "kind": "state",
+      "wikidataId": "Q145",
+      "wikipediaTitle": "United Kingdom",
+      "names": ["Kingdom of Great Britain"],
+      "note": "Includes the Kingdom of Great Britain (1707–1800). The Kingdom of England and Kingdom of Scotland stay separate entities."
+    },
+    {
+      "id": "zhou",
+      "displayName": "Zhou dynasty",
+      "kind": "state",
+      "wikidataId": "Q35216",
+      "wikipediaTitle": "Zhou dynasty",
+      "names": ["Zhou Dynasty", { "name": "Later Zhou", "to": -1 }],
+      "note": "The source's \"Later Zhou\" records before 1 CE are the Eastern Zhou (see data/corrections/zhou.json)."
+    },
+    {
+      "id": "later-zhou",
+      "displayName": "Later Zhou",
+      "kind": "state",
+      "wikidataId": "Q1154556",
+      "wikipediaTitle": "Later Zhou",
+      "names": [{ "name": "Later Zhou", "from": 1 }]
+    }
+  ]
+}
